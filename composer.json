@@ -1,0 +1,19 @@
+{
+    "name": "ltd-beget/doc-book",
+    "authors": [
+        {
+            "name": "LTD-Beget",
+            "homepage": "https://www.beget.com/"
+        }
+    ],
+    "require": {
+        "php": ">=7.0",
+        "symfony/yaml" : "3.0.*",
+        "guzzlehttp/guzzle": "^6.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "LTDBeget\\util\\DocBook\\": "src/"
+        }
+    }
+}
