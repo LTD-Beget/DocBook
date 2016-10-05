@@ -4,13 +4,14 @@ namespace LTDBeget\util\DocBook\Html\Seed;
 
 use LTDBeget\util\DocBook\Html\NodeListIterator;
 use LTDBeget\util\DocBook\Html\Directive;
-use DOMDocument;
-use DOMNodeList;
-use DOMXPath;
 use LTDBeget\util\DocBook\Tree\DirectiveSearchTree;
 use LTDBeget\util\DocBook\Tree\DirectiveTreeNode;
 use LTDBeget\util\DocBook\Tree\iTree;
 use LTDBeget\util\DocBook\Tree\iTreeNode;
+use DOMDocument;
+use DOMNodeList;
+use DOMXPath;
+use DOMElement;
 
 /**
  * @author Maxim A.
@@ -47,7 +48,7 @@ class Seeder
         $this->tree = new DirectiveSearchTree();
 
         foreach ($this->getElementsXPath() as $element) {
-            $this->tree->insert($this->addRow($element->childNodes));
+            $this->tree->insert($this->addRow($element->getElementsByTagName('td')));
         }
     }
 
@@ -69,6 +70,15 @@ class Seeder
     }
 
     /**
+     * @param DOMDocument $document
+     * @return Seeder
+     */
+    public static function seed(DOMDocument $document)
+    {
+        return new static($document);
+    }
+
+    /**
      * @return Directive
      */
     protected function fill(NodeListIterator $nodeListIterator)
@@ -80,8 +90,8 @@ class Seeder
         $directive->setDirective($nodeListIterator->current()->textContent);
 
         if ($current->firstChild->hasAttributes()) {
-            $directive->setDocumentationName(
-                $current->firstChild->attributes->getNamedItem('linkend')->nodeValue
+            $directive->setDocumentationUrl(
+                $current->firstChild->attributes->getNamedItem('href')->nodeValue
             );
         }
 
@@ -106,12 +116,12 @@ class Seeder
     }
 
     /**
-     * @return DOMNodeList
+     * @return DOMElement[]
      */
     protected function getElementsXPath() : DOMNodeList
     {
         $documentXPath = new DOMXPath($this->document);
-        $nodeList = $documentXPath->query('//table//tbody/row');
+        $nodeList = $documentXPath->query("//table[@class='doctable table']//tbody/tr");
 
         return $nodeList;
     }

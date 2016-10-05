@@ -21,34 +21,22 @@ class Director
     protected $httpClient;
 
     /**
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->httpClient = new GuzzleHttp\Client([
-            'base_uri' => $this->getRepositoryBase(),
-        ]);
-    }
-
-    /**
      * @return DirectiveSearchTree
      */
     public function all() : iTree
     {
-        $seed = new Seeder($this->getContents($this->getConfigurationStorageUri()));
-
-        return $seed->getTree();
+        return Seeder::seed($this->getContents($this->getDirectivesListUri()))->getTree();
     }
 
     /**
-     * @param string $repositoryXml
+     * @param string $repository
      * @return DOMDocument
      * @throws InvalidArgumentException
      */
-    protected function getContents(string $repositoryXml) : DOMDocument
+    protected function getContents(string $repository) : DOMDocument
     {
         try {
-            $clientContents = $this->getHttpClient()->request('GET', $repositoryXml)->getBody()->getContents();
+            $clientContents = $this->getHttpClient()->request('GET', $repository)->getBody()->getContents();
 
             $document = new DOMDocument();
 
@@ -67,7 +55,19 @@ class Director
      */
     protected function getHttpClient() : GuzzleHttp\Client
     {
+        if (!$this->httpClient) {
+            $this->httpClient = new GuzzleHttp\Client();
+        }
+
         return $this->httpClient;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getDirectivesListUri() : string
+    {
+        return 'http://php.net/manual/en/ini.list.php';
     }
 
     /**
@@ -76,13 +76,5 @@ class Director
     protected function getRepositoryBase() : string
     {
         return 'https://svn.php.net/repository/';
-    }
-
-    /**
-     * @return string
-     */
-    protected function getConfigurationStorageUri() : string
-    {
-        return 'phpdoc/en/trunk/appendices/ini.list.xml';
     }
 }

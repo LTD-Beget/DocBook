@@ -39,11 +39,6 @@ class Directive
     /**
      * @var string
      */
-    public $documentationName;
-
-    /**
-     * @var string
-     */
     public $availableSince;
 
     /**
@@ -60,11 +55,6 @@ class Directive
      * @var string
      */
     protected $directive;
-
-    /**
-     * @var string
-     */
-    protected $directiveSection;
 
     /**
      * @var NodeListIterator
@@ -125,23 +115,6 @@ class Directive
     public function getUsedAt() : string
     {
         return $this->usedAt;
-    }
-
-    /**
-     * @param string $name
-     * @return void
-     */
-    public function setDocumentationName(string $name)
-    {
-        $this->documentationName = $name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDocumentationName() : string
-    {
-        return $this->documentationName;
     }
 
     /**
@@ -221,11 +194,12 @@ class Directive
     }
 
     /**
-     * @return string
+     * @param string $url
+     * @return void
      */
-    public function getDirectiveSection() : string
+    public function setDocumentationUrl(string $url)
     {
-        return $this->directiveSection;
+        $this->documentationUrl = $url;
     }
 
     /**
